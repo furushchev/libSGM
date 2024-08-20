@@ -96,7 +96,7 @@ __global__ void aggregate_oblique_path_kernel(
 		__syncthreads();
 		// Compute
 		if(0 <= x && x < static_cast<int>(width)){
-			const feature_type left_value = __ldg(&left[x + y * width]);
+			const feature_type left_value = ldg(&left[x + y * width]);
 			feature_type right_values[DP_BLOCK_SIZE];
 			for(unsigned int j = 0; j < DP_BLOCK_SIZE; ++j){
 				right_values[j] = right_buffer[right0_addr_lo + j][right0_addr_hi];

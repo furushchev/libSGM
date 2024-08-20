@@ -86,7 +86,7 @@ __global__ void aggregate_horizontal_path_kernel(
 			for(unsigned int j = 0; j < DP_BLOCK_SIZE; ++j){
 				const int x = static_cast<int>(width - (min_disp + j + dp_offset));
 				if(0 <= x && x < static_cast<int>(width)){
-					right_buffer[i][j] = __ldg(&right[i * feature_step + x]);
+					right_buffer[i][j] = ldg(&right[i * feature_step + x]);
 				}else{
 					right_buffer[i][j] = 0;
 				}
@@ -106,7 +106,7 @@ __global__ void aggregate_horizontal_path_kernel(
 				if(y >= height){
 					continue;
 				}
-				const feature_type left_value = __ldg(&left[j * feature_step + x]);
+				const feature_type left_value = ldg(&left[j * feature_step + x]);
 				if(DIRECTION > 0){
 					const feature_type t = right_buffer[j][DP_BLOCK_SIZE - 1];
 					for(unsigned int k = DP_BLOCK_SIZE - 1; k > 0; --k){
@@ -119,7 +119,7 @@ __global__ void aggregate_horizontal_path_kernel(
 #endif
 					if(lane_id == 0 && x >= min_disp){
 						right_buffer[j][0] =
-							__ldg(&right[j * feature_step + x - min_disp]);
+							ldg(&right[j * feature_step + x - min_disp]);
 					}
 				}else{
 					const feature_type t = right_buffer[j][0];
@@ -135,7 +135,7 @@ __global__ void aggregate_horizontal_path_kernel(
 					if(lane_id + 1 == SUBGROUP_SIZE){
 						if(x >= min_disp + dp_offset + DP_BLOCK_SIZE - 1){
 							right_buffer[j][DP_BLOCK_SIZE - 1] =
-								__ldg(&right[j * feature_step + x - (min_disp + dp_offset + DP_BLOCK_SIZE - 1)]);
+								ldg(&right[j * feature_step + x - (min_disp + dp_offset + DP_BLOCK_SIZE - 1)]);
 						}else{
 							right_buffer[j][DP_BLOCK_SIZE - 1] = 0;
 						}

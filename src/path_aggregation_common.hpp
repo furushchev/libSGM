@@ -99,6 +99,15 @@ __device__ unsigned int generate_mask()
 	return static_cast<unsigned int>((1ull << SIZE) - 1u);
 }
 
+template<typename T>
+__device__ __forceinline__ T ldg(const T* ptr) {
+#if __CUDA_ARCH__ >= 350
+    return __ldg(ptr);
+#else
+    return *ptr;
+#endif
+}
+
 }
 }
 
